@@ -13,6 +13,7 @@
 
 const AWS = require('aws-sdk');
 const error = require('./lib/error.js');
+
 const _ = require('lodash');
 
 const getMp4Group = (outputPath) => ({
@@ -21,6 +22,7 @@ const getMp4Group = (outputPath) => ({
         Type: 'FILE_GROUP_SETTINGS',
         FileGroupSettings: {
             Destination: `${outputPath}/mp4/`
+
         }
     },
     Outputs: []

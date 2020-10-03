@@ -35,11 +35,15 @@ The workflow configuration is set at deployment and is defined as environment va
 * **MediaConvert_Template_2160p:**	The name of the UHD template in MediaConvert
 * **MediaConvert_Template_1080p:**	The name of the HD template in MediaConvert
 * **MediaConvert_Template_720p:**	The name of the SD template in MediaConvert
+* **MediaConvert_Template_2160p_Portrait:**  The name of the UHD portrait template in MediaConvert
+* **MediaConvert_Template_1080p_Portrait:**  The name of the HD portrait template in MediaConvert
+* **MediaConvert_Template_720p_Portrait:** The name of the SD portrait template in MediaConvert
 * **Source:**	The name of the source S3 bucket
 * **WorkflowName:**	Used to tag all of the MediaConvert encoding jobs
 * **acceleratedTranscoding** Enabled Accelerated Transocding in MediaConvert. options include ENABLE, DISABLE, PREFERRED. for more detials please see: 
 * **enableSns** Send SNS notifications for the workflow results.
 * **enableSqs** Send the workflow results to an SQS queue
+
 
 ### WorkFlow Triggers
 
@@ -75,6 +79,9 @@ The only required field for the metadata file is the **srcVideo**. The workflow 
     "jobTemplate_2160p": "string",
     "jobTemplate_1080p": "string",
     "jobTemplate_720p": "string",
+    "MediaConvert_Template_2160p_Portrait":"string",
+    "MediaConvert_Template_1080p_Portrait":"string",
+    "MediaConvert_Template_720p_Portrait":"string",
     "jobTemplate": "custom-job-template",
     "inputRotate": "DEGREE_0|DEGREES_90|DEGREES_180|DEGREES_270|AUTO",
     "captions": {
@@ -82,6 +89,7 @@ The only required field for the metadata file is the **srcVideo**. The workflow 
         "fontSize": integer,
         "fontColor": "WHITE|BLACK|YELLOW|RED|GREEN|BLUE"
     }
+
 }
 ```
 
@@ -93,11 +101,19 @@ At launch the Solution creates 3 MediaConvert job templates which are used as th
 - **MediaConvert_Template_1080p**
 - **MediaConvert_Template_720p**
 
+**MediaConvert_Template_2160p_Portrait::** NOTE: portrait conversion only works when QVBR is enabled. 2 mp4 outputs AVC 2160p through 720p, 8 HLS outputs AVC 1080p through 270p and 8 DASH outputs AVC 1080p through 270p
+
+**MediaConvert_Template_1080p_Portrait::** NOTE: portrait conversion only works when QVBR is enabled. 2 mp4 outputs AVC 2160p through 720p, 8 HLS outputs AVC 1080p through 270p and 8 DASH outputs AVC 1080p through 270p
+
+**MediaConvert_Template_720p_Portrait::** NOTE: portrait conversion only works when QVBR is enabled. 1 mp4 720p AVC output, 7 HLS outputs AVC 720p through 270p and 7 DASH outputs AVC 720p through 270p
+
 By default, the profiler step in the process step function will check the source video height and set the parameter "jobTemplate" to one of the available templates. This variable is then passed to the encoding step which submits a job to Elemental MediaConvert. To customize the encoding templates used by the solution you can either replace the existing templates or you can use the source metadata version of the workflow and define the jobTemplate as part of the source metadata file.
 
 **To replace the templates:**
 1.	Use the system templates or create 3 new templates through the MediaConvert console (see the Elemental MediaConvert documentation for details).
 2.	Update the environment variables for the input validate lambda function with the names of the new templates.
+
+
 
 **To define the job template using metadata:**
 1.	Launch the solution with source metadata parameter. See Appendix E for more details.

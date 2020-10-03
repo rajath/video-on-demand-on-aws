@@ -21,6 +21,7 @@ exports.handler = async (event) => {
     const s3 = new AWS.S3();
     let data;
 
+
     try {
         // Default configuration for the workflow is built using the enviroment variables.
         // Any parameter in config can be overwriten using a metadata file.
@@ -38,11 +39,15 @@ exports.handler = async (event) => {
             jobTemplate_2160p: process.env.MediaConvert_Template_2160p,
             jobTemplate_1080p: process.env.MediaConvert_Template_1080p,
             jobTemplate_720p: process.env.MediaConvert_Template_720p,
+            jobTemplate_2160p_portrait: process.env.MediaConvert_Template_2160p_Portrait,
+            jobTemplate_1080p_portrait: process.env.MediaConvert_Template_1080p_Portrait,
+            jobTemplate_720p_portrait: process.env.MediaConvert_Template_720p_Portrait,
             inputRotate: process.env.InputRotate,
             acceleratedTranscoding: process.env.AcceleratedTranscoding,
             enableSns:JSON.parse(process.env.EnableSns),
             enableSqs:JSON.parse(process.env.EnableSqs)
         };
+
 
         switch (event.workflowTrigger) {
             case 'Metadata':

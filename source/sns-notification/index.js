@@ -47,6 +47,9 @@ exports.handler = async (event) => {
             delete msg.jobTemplate_2160p;
             delete msg.jobTemplate_1080p;
             delete msg.jobTemplate_720p;
+            delete msg.jobTemplate_2160p_portrait;
+            delete msg.jobTemplate_1080p_portrait;
+            delete msg.jobTemplate_720p_portrait;
             delete msg.encodingJob;
             delete msg.encodingOutput;
 
@@ -68,6 +71,7 @@ exports.handler = async (event) => {
         }
 
         console.log(`SEND SNS:: ${JSON.stringify(event, null, 2)}`);
+
 
         let params = {
             Message: JSON.stringify(msg, null, 2),

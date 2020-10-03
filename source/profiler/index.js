@@ -32,64 +32,72 @@ exports.handler = async (event) => {
 
         let data = await dynamo.get(params).promise();
 
-        Object.keys(data.Item).forEach(key => {
-            event[key] = data.Item[key];
-        });
 
-        let mediaInfo = JSON.parse(event.srcMediainfo);
-        event.srcHeight = mediaInfo.video[0].height;
-        event.srcWidth = mediaInfo.video[0].width;
+    Object.keys(data.Item).forEach(function(key) {
+      event[key] = data.Item[key];
+    });
+    let mediaInfo = JSON.parse(event.srcMediainfo);
+    event.rotation = mediaInfo.video[0].rotation;
+    event.isRotated = (event.rotation !== 0 && event.rotation !== 180);
+    if (event.isRotated) {
+      event.srcHeight = mediaInfo.video[0].width;
+      event.srcWidth = mediaInfo.video[0].height;
+    } else {
+      event.srcHeight = mediaInfo.video[0].height;
+      event.srcWidth = mediaInfo.video[0].width;
+    }
 
-        // Determine encoding by matching the srcHeight to the nearest profile.
-        const profiles = [2160, 1080, 720];
-        let lastProfile;
-        let encodeProfile;
+    event.isPortrait = event.srcHeight > event.srcWidth;
+    event.lesserDimension = event.isPortrait ? event.srcWidth : event.srcHeight;
 
-        profiles.some(p => {
-            let profile = Math.abs(event.srcHeight - p);
-            if (profile > lastProfile) {
-                return true;
-            }
+    //Determine Encoding profile by matching the src to the nearest profile.
+    const profiles = [2160, 1080, 720];
+    let lastProfile;
+    let encodeProfile;
 
-            encodeProfile = p;
-            lastProfile = profile;
-        });
+    profiles.some(function(p) {
+      let profile = Math.abs(event.lesserDimension - p);
+      if (profile > lastProfile) {
+        return true;
+      }
+      encodeProfile = p;
+      lastProfile = profile;
+    });
+    event.encodingProfile = encodeProfile;
 
-        event.encodingProfile = encodeProfile;
+    if (event.frameCapture) {
+      // Match Height x Width with the encoding profile.
+      const ratios = {
+        '2160':3840,
+        '1080':1920,
+        '720':1280
+      };
+      event.frameCaptureHeight = encodeProfile;
+      event.frameCaptureWidth = ratios[encodeProfile];
+    }
 
-        if (event.frameCapture) {
-            // Match Height x Width with the encoding profile.
-            const ratios = {
-                '2160': 3840,
-                '1080': 1920,
-                '720': 1280
-            };
+    // Update:: added support to pass in a custom encoding Template instead of using the
+    // solution defaults
+    if (!event.jobTemplate) {
+      // Match the jobTemplate to the encoding Profile.
+      const jobTemplates = {
+        '2160': event.jobTemplate_2160p,
+        '1080': event.jobTemplate_1080p,
+        '720': event.jobTemplate_720p,
+        '2160p': event.jobTemplate_2160p_portrait,
+        '1080p': event.jobTemplate_1080p_portrait,
+        '720p': event.jobTemplate_720p_portrait
+      };
 
-            event.frameCaptureHeight = encodeProfile;
-            event.frameCaptureWidth = ratios[encodeProfile];
-        }
-
-        // Update:: added support to pass in a custom encoding Template instead of using the
-        // solution defaults
-        if (!event.jobTemplate) {
-            // Match the jobTemplate to the encoding Profile.
-            const jobTemplates = {
-                '2160': event.jobTemplate_2160p,
-                '1080': event.jobTemplate_1080p,
-                '720': event.jobTemplate_720p
-            };
-
-            event.jobTemplate = jobTemplates[encodeProfile];
-            console.log(`Chosen template:: ${event.jobTemplate}`);
-
-            event.isCustomTemplate = false;
-        } else {
+    event.jobTemplate = jobTemplates[encodeProfile+(event.isPortrait ? 'p' : '')];
+    console.log('Encoding jobTemplates:: ', event.jobTemplate);
+    event.isCustomTemplate = false;
+    } else {
             event.isCustomTemplate = true;
         }
     } catch (err) {
         await error.handler(event, err);
         throw err;
-    }
 
     console.log(`RESPONSE:: ${JSON.stringify(event, null, 2)}`);
     return event;
