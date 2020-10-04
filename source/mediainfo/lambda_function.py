@@ -72,6 +72,7 @@ def parse_video_attributes(track):
 
     attributes['bitDepth'] = parse_number(track.get('BitDepth'))
     attributes['colorSpace'] = '{0} {1}'.format(track.get('ColorSpace'), track.get('ChromaSubsampling'))
+    attributes['rotation'] = parse_number(track.get('Rotation'))
 
     return compact(attributes)
 
