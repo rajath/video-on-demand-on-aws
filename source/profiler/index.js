@@ -37,15 +37,10 @@ exports.handler = async (event) => {
       event[key] = data.Item[key];
     });
     let mediaInfo = JSON.parse(event.srcMediainfo);
-    if(mediaInfo.video[0].rotation)
-    {
-        event.rotation = mediaInfo.video[0].rotation;
-        event.isRotated = (event.rotation !== 0 && event.rotation !== 180);
-    }
-    else
-    {
-        event.isRotated = false;
-    }
+   
+   //check if rotate flag was set in media
+    event.isRotated = (mediaInfo.video[0].isPortrait == 1);
+   
     if (event.isRotated) {
       event.srcHeight = mediaInfo.video[0].width;
       event.srcWidth = mediaInfo.video[0].height;

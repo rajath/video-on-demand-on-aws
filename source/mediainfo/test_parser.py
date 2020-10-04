@@ -60,7 +60,8 @@ class TestParser(unittest.TestCase):
             'DisplayAspectRatio': '1.778',
             'BitDepth': '8',
             'ColorSpace': 'YUV',
-            'ChromaSubsampling': '4:2:0'
+            'ChromaSubsampling': '4:2:0',
+            'Rotation': "90.000"
         }
 
         expected = {
@@ -75,7 +76,8 @@ class TestParser(unittest.TestCase):
             'scanType': 'Progressive',
             'aspectRatio': '1.778',
             'bitDepth': 8,
-            'colorSpace': 'YUV 4:2:0'
+            'colorSpace': 'YUV 4:2:0',
+            'isPortrait': 1
         }
 
         self.assertEqual(function.parse_video_attributes(track), expected)
