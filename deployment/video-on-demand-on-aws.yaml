@@ -757,7 +757,7 @@ Resources:
 
           CloudFront: !GetAtt CloudFront.DomainName
           EnableMediaPackage: !Ref EnableMediaPackage
-          InputRotate: DEGREE_0
+          InputRotate: AUTO
           EnableSns: !Ref EnableSns
           EnableSqs: !Ref EnableSqs
           AcceleratedTranscoding: !Ref AcceleratedTranscoding
