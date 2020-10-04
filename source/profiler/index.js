@@ -37,8 +37,15 @@ exports.handler = async (event) => {
       event[key] = data.Item[key];
     });
     let mediaInfo = JSON.parse(event.srcMediainfo);
-    event.rotation = mediaInfo.video[0].rotation;
-    event.isRotated = (event.rotation !== 0 && event.rotation !== 180);
+    if(mediaInfo.video[0].rotation)
+    {
+        event.rotation = mediaInfo.video[0].rotation;
+        event.isRotated = (event.rotation !== 0 && event.rotation !== 180);
+    }
+    else
+    {
+        event.isRotated = false;
+    }
     if (event.isRotated) {
       event.srcHeight = mediaInfo.video[0].width;
       event.srcWidth = mediaInfo.video[0].height;
@@ -98,7 +105,7 @@ exports.handler = async (event) => {
     } catch (err) {
         await error.handler(event, err);
         throw err;
-
+    }
     console.log(`RESPONSE:: ${JSON.stringify(event, null, 2)}`);
     return event;
 };
