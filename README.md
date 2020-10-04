@@ -1,6 +1,6 @@
 # Video on Demand on AWS
 Forked repository with modifications done to support portrait video
-## Modifications done
+## Modifications done in this fork
 * Removed audio track definition for silent videos
 * Added portrait mode code changes (borrowed from https://github.com/arivera-skycred/video-on-demand-on-aws)
 * Modified mediainfo code to detect rotation
