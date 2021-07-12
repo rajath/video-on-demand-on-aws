@@ -75,7 +75,7 @@ def parse_video_attributes(track):
     #check for rotation/portrait mode to help profiler select right template
     #setting a custom  isPortrait flag instead of a Rotate flag since it may create issues with media players
     rotation = round(parse_number(track.get('Rotation'))) if (track.get('Rotation')) else 0
-    attributes['isPortrait'] = 1 if (rotation == 90 or rotation == 180) else 0
+    attributes['isPortrait'] = 1 if (rotation == 90 or rotation == 270) else 0
 
     return compact(attributes)
 
