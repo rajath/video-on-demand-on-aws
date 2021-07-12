@@ -1,11 +1,12 @@
 # Video on Demand on AWS
 Forked repository with modifications done to support portrait video
-## Modifications done
+## Modifications done in this fork
 * Removed audio track definition for silent videos
 * Added portrait mode code changes (borrowed from https://github.com/arivera-skycred/video-on-demand-on-aws)
 * Modified mediainfo code to detect rotation
 * Added portrait mode templates to Media Package
 
+## Original Readme
 How to implement a video-on-demand workflow on AWS leveraging AWS Step Functions, AWS Elemental MediaConvert, and AWS Elemental MediaPackage.
 Source code for [Video on Demand on AWS](https://aws.amazon.com/solutions/video-on-demand-on-aws/) solution.
 
